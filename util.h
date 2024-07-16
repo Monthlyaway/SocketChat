@@ -10,4 +10,3 @@
 int create_sockfd();
 
 struct sockaddr_in *create_addr(int sockfd, char *ip, int port);
-

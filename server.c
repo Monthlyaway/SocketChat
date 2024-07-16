@@ -8,7 +8,6 @@
 #include <pthread.h>
 #include "util.h"
 
-#define OUTPUT_PROMPT "> "
 
 void check_bind(int sockfd, struct sockaddr_in *addr);
 void receive_msg(int sockfd);
@@ -42,9 +41,7 @@ void receive_msg(int sockfd)
         int num_recv = recv(sockfd, msg_recv, sizeof(msg_recv), 0);
         if (num_recv > 0)
         {
-            printf("%s", OUTPUT_PROMPT);
-            fwrite(msg_recv, sizeof(char), num_recv, stdout);
-            putchar('\n');
+            printf("[Connection %d]: %s\n", sockfd, msg_recv);
         }
         else
         {
@@ -72,7 +69,7 @@ void check_bind(int sockfd, struct sockaddr_in *addr)
 
 int accept_client(int sockfd)
 {
-    printf("Listening on welcome socket: %d\n", sockfd);
+    printf("INFO: Listening on welcome socket: %d\n", sockfd);
     struct sockaddr_in connection_addr;
     int connection_addr_size = sizeof(connection_addr);
     int connection_fd = accept(sockfd, (struct sockaddr *)&connection_addr, &connection_addr_size);
@@ -85,7 +82,7 @@ void accept_and_receive(int welcome_fd)
     {
         int connection_fd = accept_client(welcome_fd);
         pthread_t id;
-        printf("INFO: new connection thread, fd = %d\n", connection_fd);
+        printf("INFO: New connection thread, fd = %d\n", connection_fd);
         pthread_create(&id, NULL, receive_msg, connection_fd);
         // receive_msg(connection_fd);
     }
